@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemetria Rural - IFMG</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px;
+        }
+
+        .header {
+            background-color: #0056b3;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #cce5ff;
+        }
+
+        .content {
+            padding: 25px 20px;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .card h2 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        /* Estilo da Caixa d'Água Visual */
+        .reservoir-box {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 140px;
+            width: 70px;
+            background-color: #dee2e6;
+            border: 4px solid #343a40;
+            border-radius: 5px;
+            margin: 10px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .water-level {
+            width: 100%;
+            height: 82%;
+            /* Isso pode ser controlado via JS depois */
+            background-color: #007bff;
+            transition: height 0.8s ease-in-out;
+        }
+
+        .percentage-text {
+            position: absolute;
+            font-weight: bold;
+            color: #000;
+            top: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn-on {
+            background-color: #28a745;
+        }
+
+        .btn-off {
+            background-color: #dc3545;
+        }
+
+        .status-indicator {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard">
+        <div class="header">
+            <h1>Monitoramento</h1>
+            <p>Sistema de Telemetria Rural</p>
+        </div>
+
+        <div class="content">
+            <div class="card">
+                <h2>Nível do Reservatório</h2>
+                <div class="reservoir-box">
+                    <div id="water" class="water-level"></div>
+                    <div class="percentage-text" id="perc">82%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Vazão Atual</h2>
+                <div style="font-size: 24px; font-weight: bold;">14.5 L/min</div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-on" onclick="updateLevel(95)">LIGAR</button>
+                <button class="btn btn-off" onclick="updateLevel(20)">DESLIGAR</button>
+            </div>
+
+            <div id="status" class="status-indicator">Status: Operando</div>
+        </div>
+    </div>
+
+    <script>
+        function updateLevel(nivel) {
+            document.getElementById('water').style.height = nivel + '%';
+            document.getElementById('perc').innerText = nivel + '%';
+            document.getElementById('status').innerText = 'Status: ' + (nivel > 50 ? 'ENCHENDO...' : 'DESLIGADA!');
+        }
+    </script>
+
+</body>
+
+</html>
