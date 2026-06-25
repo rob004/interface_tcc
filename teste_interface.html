@@ -83,7 +83,6 @@
         .water-level {
             width: 100%;
             height: 82%;
-            /* Isso pode ser controlado via JS depois */
             background-color: #007bff;
             transition: height 0.8s ease-in-out;
         }
@@ -110,7 +109,13 @@
             font-weight: bold;
             cursor: pointer;
             color: white;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, background-color 0.2s;
+        }
+
+        .btn:disabled {
+            background-color: #ced4da !important;
+            cursor: not-allowed;
+            color: #6c757d;
         }
 
         .btn-on {
@@ -121,6 +126,17 @@
             background-color: #dc3545;
         }
 
+        .btn-auto {
+            width: 100%;
+            background-color: #0d6efd;
+            margin-bottom: 15px;
+        }
+
+        .btn-auto.active {
+            background-color: #ffc107;
+            color: #000;
+        }
+
         .status-indicator {
             margin-top: 20px;
             text-align: center;
@@ -129,6 +145,7 @@
             background-color: #d4edda;
             color: #155724;
             border-radius: 8px;
+            transition: all 0.3s;
         }
     </style>
 </head>
@@ -155,20 +172,77 @@
                 <div style="font-size: 24px; font-weight: bold;">14.5 L/min</div>
             </div>
 
+            <button id="btnAuto" class="btn btn-auto" onclick="toggleAutoMode()">ATIVAR MODO AUTOMÁTICO</button>
+
             <div class="controls">
-                <button class="btn btn-on" onclick="updateLevel(95)">LIGAR</button>
-                <button class="btn btn-off" onclick="updateLevel(20)">DESLIGAR</button>
+                <button id="btnLigar" class="btn btn-on" onclick="manualControl('LIGADO')">LIGAR</button>
+                <button id="btnDesligar" class="btn btn-off" onclick="manualControl('DESLIGADO')">DESLIGAR</button>
             </div>
 
-            <div id="status" class="status-indicator">Status: Operando</div>
+            <div id="status" class="status-indicator">Status: Aguardando comando...</div>
         </div>
     </div>
 
     <script>
-        function updateLevel(nivel) {
-            document.getElementById('water').style.height = nivel + '%';
-            document.getElementById('perc').innerText = nivel + '%';
-            document.getElementById('status').innerText = 'Status: ' + (nivel > 50 ? 'ENCHENDO...' : 'DESLIGADA!');
+        let isAutoMode = false;
+
+        function toggleAutoMode() {
+            isAutoMode = !isAutoMode;
+            const btnAuto = document.getElementById('btnAuto');
+            const btnLigar = document.getElementById('btnLigar');
+            const btnDesligar = document.getElementById('btnDesligar');
+            const statusDiv = document.getElementById('status');
+
+            if (isAutoMode) {
+                btnAuto.classList.add('active');
+                btnAuto.innerText = 'DESATIVAR MODO AUTOMÁTICO';
+
+                // Trava os botões manuais
+                btnLigar.disabled = true;
+                btnDesligar.disabled = true;
+
+                // Simula a lógica automática lendo o nível
+                statusDiv.style.backgroundColor = "#fff3cd";
+                statusDiv.style.color = "#856404";
+                statusDiv.innerText = 'Status: AUTOMÁTICO (Sensores Ativos)';
+
+                // Simula uma resposta automática (ex: enchendo porque tá em 82%)
+                setTimeout(() => {
+                    document.getElementById('water').style.height = '100%';
+                    document.getElementById('perc').innerText = '100%';
+                    statusDiv.innerText = 'Status: AUTO - Reservatório Cheio (Bomba Desligada)';
+                }, 1500);
+
+            } else {
+                btnAuto.classList.remove('active');
+                btnAuto.innerText = 'ATIVAR MODO AUTOMÁTICO';
+
+                // Libera os botões manuais
+                btnLigar.disabled = false;
+                btnDesligar.disabled = false;
+
+                statusDiv.style.backgroundColor = "#e2e3e5";
+                statusDiv.style.color = "#383d41";
+                statusDiv.innerText = 'Status: Controle Manual Requerido';
+            }
+        }
+
+        function manualControl(acao) {
+            const statusDiv = document.getElementById('status');
+
+            if (acao === 'LIGADO') {
+                document.getElementById('water').style.height = '95%';
+                document.getElementById('perc').innerText = '95%';
+                statusDiv.style.backgroundColor = "#d4edda";
+                statusDiv.style.color = "#155724";
+                statusDiv.innerText = 'Status: MANUAL - Bomba LIGADA';
+            } else {
+                document.getElementById('water').style.height = '20%';
+                document.getElementById('perc').innerText = '20%';
+                statusDiv.style.backgroundColor = "#f8d7da";
+                statusDiv.style.color = "#721c24";
+                statusDiv.innerText = 'Status: MANUAL - Bomba DESLIGADA';
+            }
         }
     </script>
 
